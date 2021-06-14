@@ -1,7 +1,14 @@
-const _ = require('lodash');
-const people = require('./people');
+const EventsEmitter = require('events');
 
-const a = 5;
-console.log(a);
+const myEmitter = new EventsEmitter();
 
-console.log(_.last(people.people));
+myEmitter.on('raised', ({ period, task }) => {
+    console.log(`Event one is ended ${period} ${task}`);
+});
+
+setTimeout(() => {
+    myEmitter.emit('raised', {
+        period: 'first period',
+        task: 'first period ended',
+    });
+}, 2000);
