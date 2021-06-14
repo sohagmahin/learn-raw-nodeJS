@@ -1,14 +1,8 @@
-const EventsEmitter = require('events');
+const School = require('./school');
 
-const myEmitter = new EventsEmitter();
+const school = new School();
+school.startSchool();
 
-myEmitter.on('raised', ({ period, task }) => {
+school.on('raised', ({ period, task }) => {
     console.log(`Event one is ended ${period} ${task}`);
 });
-
-setTimeout(() => {
-    myEmitter.emit('raised', {
-        period: 'first period',
-        task: 'first period ended',
-    });
-}, 2000);
