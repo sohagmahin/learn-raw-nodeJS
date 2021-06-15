@@ -3,21 +3,27 @@
 const hasMeeting = false;
 const meeting = new Promise((resolve, reject) => {
     if (!hasMeeting) {
-        const meetingData = {
+        const meetingDetails = {
             name: 'technical meeting',
-            date: '13 july',
+            location: 'Zoom',
             time: '10.00 PM',
         };
-        resolve(meetingData);
+        resolve(meetingDetails);
     } else {
-        const meetingData = new Error('meeting already scheduled!');
-        reject(meetingData);
+        const meetingDetails = new Error('meeting already scheduled!');
+        reject(meetingDetails);
     }
 });
 
+const addCalendar = (meetingDetails) => {
+    const calendar = `${meetingDetails.name} has been scheduled on ${meetingDetails.location} at ${meetingDetails.time}`;
+    return Promise.resolve(calendar);
+};
+
 meeting
+    .then(addCalendar)
     .then((res) => {
-        console.log(JSON.stringify(res));
+        console.log(res);
     })
     .catch((err) => {
         console.log(err.message);
