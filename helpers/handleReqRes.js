@@ -11,7 +11,7 @@ const { StringDecoder } = require('string_decoder');
 const url = require('url');
 const routes = require('../routes');
 
-// App scaffolding
+// handles scaffolding
 const handler = {};
 
 // handle request response

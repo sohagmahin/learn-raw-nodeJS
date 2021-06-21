@@ -6,7 +6,7 @@
  *
  */
 
-// app scaffolding
+// module scaffolding
 const handler = {};
 
 handler.notFoundHandler = (requestRequirements, callback) => {

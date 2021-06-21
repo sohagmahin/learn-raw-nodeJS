@@ -10,7 +10,7 @@
 const { notFoundHandler } = require('./handlers/routeHandlers/notFoundHandler');
 const { sampleHandler } = require('./handlers/routeHandlers/sampleHandler');
 
-// app scaffolding
+// routes scaffolding
 const routes = {
     sample: sampleHandler,
     notfound: notFoundHandler,
