@@ -5,14 +5,12 @@
  * Date: 21/06/2021
  *
  */
-// dependencies
 
-const { notFoundHandler } = require('./handlers/routeHandlers/notFoundHandler');
+// dependencies
 const { sampleHandler } = require('./handlers/routeHandlers/sampleHandler');
 
 // routes scaffolding
 const routes = {
     sample: sampleHandler,
-    notfound: notFoundHandler,
 };
 module.exports = routes;
