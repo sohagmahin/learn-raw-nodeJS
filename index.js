@@ -29,10 +29,15 @@ const app = {};
 // });
 
 // update the file
+// data.update('test', 'newFile', { name: 'Germany', language: 'German' }, (err) => {
+//     console.log(err);
+// });
 
-data.update('test', 'newFile', { name: 'Germany', language: 'German' }, (err) => {
+// delete file
+data.delete('test', 'newFile', (err) => {
     console.log(err);
 });
+
 // create server
 app.createServer = () => {
     const server = http.createServer(app.handleReqRes);
