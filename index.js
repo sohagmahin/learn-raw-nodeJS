@@ -24,8 +24,14 @@ const app = {};
 // });
 
 // read data from file
-data.read('test', 'newFile', (err, data) => {
-    console.log(err, data);
+// data.read('test', 'newFile', (err, data) => {
+//     console.log(err, data);
+// });
+
+// update the file
+
+data.update('test', 'newFile', { name: 'Germany', language: 'German' }, (err) => {
+    console.log(err);
 });
 // create server
 app.createServer = () => {
