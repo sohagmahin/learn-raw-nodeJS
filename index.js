@@ -18,10 +18,15 @@ const app = {};
 // testing file system
 // @TODO: will be erase
 
-data.create('test', 'newFile', { name: 'Bangladesh', language: 'Bangla' }, (err) => {
-    console.log(err);
-});
+// Write data to file storage
+// data.create('test', 'newFile', { name: 'Bangladesh', language: 'Bangla' }, (err) => {
+//     console.log(err);
+// });
 
+// read data from file
+data.read('test', 'newFile', (err, data) => {
+    console.log(err, data);
+});
 // create server
 app.createServer = () => {
     const server = http.createServer(app.handleReqRes);
