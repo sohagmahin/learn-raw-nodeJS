@@ -17,7 +17,7 @@ handler.userHandler = (requestProperties, callback) => {
     const acceptedMethods = ['get', 'post', 'put', 'delete'];
 
     if (acceptedMethods.indexOf(requestProperties.method) > -1) {
-        handler._user[requestProperties.method](requestProperties, callback);
+        handler._users[requestProperties.method](requestProperties, callback);
     } else {
         callback(405);
     }
@@ -25,26 +25,30 @@ handler.userHandler = (requestProperties, callback) => {
     console.log(requestProperties);
 };
 
-handler._user = {};
+handler._users = {};
 
-handler._user.post = (requestProperties, callback) => {
-    const firstName =        typeof requestProperties.body.firstName === 'string' &&
-        requestProperties.body.firstName.trim().length > 0
+handler._users.post = (requestProperties, callback) => {
+    const firstName =
+        typeof requestProperties.body.firstName === 'string'
+        && requestProperties.body.firstName.trim().length > 0
             ? requestProperties.body.firstName
             : false;
 
-    const lastName =        typeof requestProperties.body.lastName === 'string' &&
-        requestProperties.body.lastName.trim().length > 0
+    const lastName =
+        typeof requestProperties.body.lastName === 'string'
+        && requestProperties.body.lastName.trim().length > 0
             ? requestProperties.body.lastName
             : false;
 
-    const phone =        typeof requestProperties.body.phone === 'string' &&
-        requestProperties.body.phone.trim().length === 11
+    const phone =
+        typeof requestProperties.body.phone === 'string'
+        && requestProperties.body.phone.trim().length === 11
             ? requestProperties.body.phone
             : false;
 
-    const password =        typeof requestProperties.body.password === 'string' &&
-        requestProperties.body.password.trim().length > 0
+    const password =
+        typeof requestProperties.body.password === 'string'
+        && requestProperties.body.password.trim().length > 0
             ? requestProperties.body.password
             : false;
 
@@ -89,9 +93,9 @@ handler._user.post = (requestProperties, callback) => {
     }
 };
 
-handler._user.get = (requestProperties, callback) => {
+handler._users.get = (requestProperties, callback) => {
     callback(200);
 };
-handler._user.put = (requestProperties, callback) => {};
-handler._user.delete = (requestProperties, callback) => {};
+handler._users.put = (requestProperties, callback) => {};
+handler._users.delete = (requestProperties, callback) => {};
 module.exports = handler;
