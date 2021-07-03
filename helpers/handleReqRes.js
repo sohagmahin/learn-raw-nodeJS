@@ -11,6 +11,7 @@ const { StringDecoder } = require('string_decoder');
 const url = require('url');
 const routes = require('../routes');
 const { notFoundHandler } = require('../handlers/routeHandlers/notFoundHandler');
+const { parseJSON } = require('./utilities');
 
 // handles scaffolding
 const handler = {};
@@ -44,6 +45,8 @@ handler.handleReqRes = (req, res) => {
 
     req.on('end', () => {
         realData += decoder.end();
+
+        requestProperties.body = parseJSON(realData);
 
         const chosenHandler = routes[trimmedPath] ? routes[trimmedPath] : notFoundHandler;
         chosenHandler(requestProperties, (statusCode, payload) => {
