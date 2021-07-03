@@ -146,6 +146,95 @@ handler._users.get = (requestProperties, callback) => {
     }
 };
 
-handler._users.put = (requestProperties, callback) => {};
+handler._users.put = (requestProperties, callback) => {
+    let firstName;
+    let lastName;
+    let phone;
+    let password;
+
+    // firstName validation check
+    if (
+        typeof requestProperties.body.firstName === 'string'
+        && requestProperties.body.firstName.trim().length > 0
+    ) {
+        firstName = requestProperties.body.firstName;
+    } else {
+        firstName = false;
+    }
+    // lastName validation check
+    if (
+        typeof requestProperties.body.lastName === 'string'
+        && requestProperties.body.lastName.trim().length > 0
+    ) {
+        lastName = requestProperties.body.lastName;
+    } else {
+        lastName = false;
+    }
+
+    // phone number validation check
+    if (
+        typeof requestProperties.body.phone === 'string'
+        && requestProperties.body.phone.trim().length === 11
+    ) {
+        phone = requestProperties.body.phone;
+    } else {
+        phone = false;
+    }
+
+    // password validation check
+    if (
+        typeof requestProperties.body.password === 'string'
+        && requestProperties.body.password.trim().length > 0
+    ) {
+        password = requestProperties.body.password;
+    } else {
+        password = false;
+    }
+
+    if (phone) {
+        if (firstName || lastName || password) {
+            // lookup the user
+            data.read('users', phone, (err1, uData) => {
+                const userData = { ...parseJSON(uData) };
+                if (!err1 && userData) {
+                    if (firstName) {
+                        userData.firstName = firstName;
+                    }
+                    if (lastName) {
+                        userData.lastName = lastName;
+                    }
+                    if (password) {
+                        userData.password = hash(password);
+                    }
+
+                    // store userData to db
+                    data.update('users', phone, userData, (err2) => {
+                        if (!err2) {
+                            callback(200, {
+                                message: 'User was updated successfully!',
+                            });
+                        } else {
+                            callback(500, {
+                                message: 'There was a problem in server side!',
+                            });
+                        }
+                    });
+                } else {
+                    callback(400, {
+                        error: 'You have a problem in your request!',
+                    });
+                }
+            });
+        } else {
+            callback(400, {
+                error: 'You have a problem in your request!',
+            });
+        }
+    } else {
+        callback(400, {
+            error: 'Invalid phone number. Please try again!',
+        });
+    }
+};
 handler._users.delete = (requestProperties, callback) => {};
 module.exports = handler;
