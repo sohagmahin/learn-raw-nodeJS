@@ -3,7 +3,7 @@
  * Title: User handler
  * Description: this handler handle user request
  * Author: Sohag (www.github.com/sohagmahin)
- * Date: 28/06/2021
+ * Date: 03/07/2021
  *
  */
 
@@ -236,5 +236,43 @@ handler._users.put = (requestProperties, callback) => {
         });
     }
 };
-handler._users.delete = (requestProperties, callback) => {};
+handler._users.delete = (requestProperties, callback) => {
+    let phone;
+    // phone number validation check
+    if (
+        typeof requestProperties.queryStringObject.phone === 'string'
+        && requestProperties.queryStringObject.phone.trim().length === 11
+    ) {
+        phone = requestProperties.queryStringObject.phone;
+    } else {
+        phone = false;
+    }
+
+    if (phone) {
+        // lookup user
+        data.read('users', phone, (err1, userData) => {
+            if (!err1 && userData) {
+                data.delete('users', phone, (err2) => {
+                    if (!err2) {
+                        callback(200, {
+                            message: 'User was successfully deleted!',
+                        });
+                    } else {
+                        callback(500, {
+                            message: 'There was a server side error !',
+                        });
+                    }
+                });
+            } else {
+                callback(500, {
+                    message: 'There was a server side error !',
+                });
+            }
+        });
+    } else {
+        callback(400, {
+            message: 'There was a problem in your request!',
+        });
+    }
+};
 module.exports = handler;
