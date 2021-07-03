@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /*
  * Title: User handler
  * Description: this handler handle user request
@@ -8,7 +9,7 @@
 
 // dependencies
 const data = require('../../lib/data');
-const { hash } = require('../../helpers/utilities');
+const { hash, parseJSON } = require('../../helpers/utilities');
 
 // module scaffolding
 const handler = {};
@@ -28,33 +29,56 @@ handler.userHandler = (requestProperties, callback) => {
 handler._users = {};
 
 handler._users.post = (requestProperties, callback) => {
-    const firstName =
+    let firstName;
+    let lastName;
+    let phone;
+    let password;
+    let tosAgreement;
+
+    // firstName validation check
+    if (
         typeof requestProperties.body.firstName === 'string'
         && requestProperties.body.firstName.trim().length > 0
-            ? requestProperties.body.firstName
-            : false;
-
-    const lastName =
+    ) {
+        firstName = requestProperties.body.firstName;
+    } else {
+        firstName = false;
+    }
+    // lastName validation check
+    if (
         typeof requestProperties.body.lastName === 'string'
         && requestProperties.body.lastName.trim().length > 0
-            ? requestProperties.body.lastName
-            : false;
+    ) {
+        lastName = requestProperties.body.lastName;
+    } else {
+        lastName = false;
+    }
 
-    const phone =
+    // phone number validation check
+    if (
         typeof requestProperties.body.phone === 'string'
         && requestProperties.body.phone.trim().length === 11
-            ? requestProperties.body.phone
-            : false;
+    ) {
+        phone = requestProperties.body.phone;
+    } else {
+        phone = false;
+    }
 
-    const password =
+    // password validation check
+    if (
         typeof requestProperties.body.password === 'string'
         && requestProperties.body.password.trim().length > 0
-            ? requestProperties.body.password
-            : false;
-
-    const tosAgreement =        typeof requestProperties.body.tosAgreement === 'boolean'
-            ? requestProperties.body.tosAgreement
-            : false;
+    ) {
+        password = requestProperties.body.password;
+    } else {
+        password = false;
+    }
+    // tosAgreement validation check
+    if (typeof requestProperties.body.tosAgreement === 'boolean') {
+        tosAgreement = requestProperties.body.tosAgreement;
+    } else {
+        tosAgreement = false;
+    }
 
     if (firstName && lastName && phone && password && tosAgreement) {
         data.read('users', phone, (err1) => {
@@ -94,8 +118,34 @@ handler._users.post = (requestProperties, callback) => {
 };
 
 handler._users.get = (requestProperties, callback) => {
-    callback(200);
+    let phone;
+
+    // user phone number validation check
+    if (
+        typeof requestProperties.queryStringObject.phone === 'string'
+        && requestProperties.queryStringObject.phone.trim().length > 0
+    ) {
+        phone = requestProperties.queryStringObject.phone;
+    } else {
+        phone = false;
+    }
+
+    if (phone) {
+        // lookup the user
+        data.read('users', phone, (err, u) => {
+            const user = { ...parseJSON(u) };
+            if (!err && user) {
+                delete user.password;
+                callback(200, user);
+            } else {
+                callback(404, {
+                    error: 'Requested user was not found!',
+                });
+            }
+        });
+    }
 };
+
 handler._users.put = (requestProperties, callback) => {};
 handler._users.delete = (requestProperties, callback) => {};
 module.exports = handler;
