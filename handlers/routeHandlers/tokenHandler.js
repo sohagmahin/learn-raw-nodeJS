@@ -32,8 +32,8 @@ handler._token.post = (requestProperties, callback) => {
     let password;
     // phone number validation check
     if (
-        typeof requestProperties.body.phone === 'string' &&
-        requestProperties.body.phone.trim().length === 11
+        typeof requestProperties.body.phone === 'string'
+        && requestProperties.body.phone.trim().length === 11
     ) {
         phone = requestProperties.body.phone;
     } else {
@@ -42,8 +42,8 @@ handler._token.post = (requestProperties, callback) => {
 
     // password validation check
     if (
-        typeof requestProperties.body.password === 'string' &&
-        requestProperties.body.password.trim().length > 0
+        typeof requestProperties.body.password === 'string'
+        && requestProperties.body.password.trim().length > 0
     ) {
         password = requestProperties.body.password;
     } else {
@@ -86,7 +86,36 @@ handler._token.post = (requestProperties, callback) => {
     }
 };
 
-handler._token.get = (requestProperties, callback) => {};
+handler._token.get = (requestProperties, callback) => {
+    let id;
+
+    // user phone number validation check
+    if (
+        typeof requestProperties.queryStringObject.id === 'string' &&
+        requestProperties.queryStringObject.id.trim().length === 20
+    ) {
+        id = requestProperties.queryStringObject.id;
+    } else {
+        id = false;
+    }
+    if (id) {
+        // lookup the token
+        data.read('tokens', id, (err, tokenData) => {
+            const token = { ...parseJSON(tokenData) };
+            if (!err && token) {
+                callback(200, token);
+            } else {
+                callback(404, {
+                    error: 'Requested token was not found!',
+                });
+            }
+        });
+    } else {
+        callback(404, {
+            error: 'Requested token was not found!',
+        });
+    }
+};
 
 handler._token.put = (requestProperties, callback) => {};
 handler._token.delete = (requestProperties, callback) => {};
