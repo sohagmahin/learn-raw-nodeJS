@@ -117,6 +117,56 @@ handler._token.get = (requestProperties, callback) => {
     }
 };
 
-handler._token.put = (requestProperties, callback) => {};
+handler._token.put = (requestProperties, callback) => {
+    let id;
+    let extend;
+
+    // user phone number validation check
+    if (
+        typeof requestProperties.body.id === 'string' &&
+        requestProperties.body.id.trim().length === 20
+    ) {
+        id = requestProperties.body.id;
+    } else {
+        id = false;
+    }
+
+    // extend token date
+    if (
+        typeof requestProperties.body.extend === 'boolean' &&
+        requestProperties.body.extend === true
+    ) {
+        extend = requestProperties.body.extend;
+    } else {
+        extend = false;
+    }
+
+    if (id && extend) {
+        // lookup the token
+        data.read('tokens', id, (err, tokenData) => {
+            const tokenObject = { ...parseJSON(tokenData) };
+            if (tokenObject.expires > Date.now()) {
+                tokenObject.expires = Date.now() + 60 * 60 * 1000;
+                data.update('tokens', id, tokenObject, (err2) => {
+                    if (!err2) {
+                        callback(200);
+                    } else {
+                        callback(500, {
+                            error: 'There was a server side error!',
+                        });
+                    }
+                });
+            } else {
+                callback(400, {
+                    error: 'Token already expired!',
+                });
+            }
+        });
+    } else {
+        callback(400, {
+            error: 'There was a problem in your request!',
+        });
+    }
+};
 handler._token.delete = (requestProperties, callback) => {};
 module.exports = handler;
