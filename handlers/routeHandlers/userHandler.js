@@ -10,6 +10,7 @@
 // dependencies
 const data = require('../../lib/data');
 const { hash, parseJSON } = require('../../helpers/utilities');
+const tokenHandler = require('./tokenHandler');
 
 // module scaffolding
 const handler = {};
@@ -37,8 +38,8 @@ handler._users.post = (requestProperties, callback) => {
 
     // firstName validation check
     if (
-        typeof requestProperties.body.firstName === 'string'
-        && requestProperties.body.firstName.trim().length > 0
+        typeof requestProperties.body.firstName === 'string' &&
+        requestProperties.body.firstName.trim().length > 0
     ) {
         firstName = requestProperties.body.firstName;
     } else {
@@ -46,8 +47,8 @@ handler._users.post = (requestProperties, callback) => {
     }
     // lastName validation check
     if (
-        typeof requestProperties.body.lastName === 'string'
-        && requestProperties.body.lastName.trim().length > 0
+        typeof requestProperties.body.lastName === 'string' &&
+        requestProperties.body.lastName.trim().length > 0
     ) {
         lastName = requestProperties.body.lastName;
     } else {
@@ -56,8 +57,8 @@ handler._users.post = (requestProperties, callback) => {
 
     // phone number validation check
     if (
-        typeof requestProperties.body.phone === 'string'
-        && requestProperties.body.phone.trim().length === 11
+        typeof requestProperties.body.phone === 'string' &&
+        requestProperties.body.phone.trim().length === 11
     ) {
         phone = requestProperties.body.phone;
     } else {
@@ -66,8 +67,8 @@ handler._users.post = (requestProperties, callback) => {
 
     // password validation check
     if (
-        typeof requestProperties.body.password === 'string'
-        && requestProperties.body.password.trim().length > 0
+        typeof requestProperties.body.password === 'string' &&
+        requestProperties.body.password.trim().length > 0
     ) {
         password = requestProperties.body.password;
     } else {
@@ -122,8 +123,8 @@ handler._users.get = (requestProperties, callback) => {
 
     // user phone number validation check
     if (
-        typeof requestProperties.queryStringObject.phone === 'string'
-        && requestProperties.queryStringObject.phone.trim().length > 0
+        typeof requestProperties.queryStringObject.phone === 'string' &&
+        requestProperties.queryStringObject.phone.trim().length > 0
     ) {
         phone = requestProperties.queryStringObject.phone;
     } else {
@@ -131,17 +132,34 @@ handler._users.get = (requestProperties, callback) => {
     }
 
     if (phone) {
-        // lookup the user
-        data.read('users', phone, (err, u) => {
-            const user = { ...parseJSON(u) };
-            if (!err && user) {
-                delete user.password;
-                callback(200, user);
+        const token =
+            typeof requestProperties.headersObject.token === 'string'
+                ? requestProperties.headersObject.token
+                : false;
+
+        tokenHandler._token.verify(token, phone, (tokenId) => {
+            if (tokenId) {
+                // lookup the user
+                data.read('users', phone, (err, u) => {
+                    const user = { ...parseJSON(u) };
+                    if (!err && user) {
+                        delete user.password;
+                        callback(200, user);
+                    } else {
+                        callback(404, {
+                            error: 'Requested user was not found!',
+                        });
+                    }
+                });
             } else {
-                callback(404, {
-                    error: 'Requested user was not found!',
+                callback(403, {
+                    error: 'Authentication failure!',
                 });
             }
+        });
+    } else {
+        callback(404, {
+            error: 'Requested user was not found!',
         });
     }
 };
@@ -154,8 +172,8 @@ handler._users.put = (requestProperties, callback) => {
 
     // firstName validation check
     if (
-        typeof requestProperties.body.firstName === 'string'
-        && requestProperties.body.firstName.trim().length > 0
+        typeof requestProperties.body.firstName === 'string' &&
+        requestProperties.body.firstName.trim().length > 0
     ) {
         firstName = requestProperties.body.firstName;
     } else {
@@ -163,8 +181,8 @@ handler._users.put = (requestProperties, callback) => {
     }
     // lastName validation check
     if (
-        typeof requestProperties.body.lastName === 'string'
-        && requestProperties.body.lastName.trim().length > 0
+        typeof requestProperties.body.lastName === 'string' &&
+        requestProperties.body.lastName.trim().length > 0
     ) {
         lastName = requestProperties.body.lastName;
     } else {
@@ -173,8 +191,8 @@ handler._users.put = (requestProperties, callback) => {
 
     // phone number validation check
     if (
-        typeof requestProperties.body.phone === 'string'
-        && requestProperties.body.phone.trim().length === 11
+        typeof requestProperties.body.phone === 'string' &&
+        requestProperties.body.phone.trim().length === 11
     ) {
         phone = requestProperties.body.phone;
     } else {
@@ -183,8 +201,8 @@ handler._users.put = (requestProperties, callback) => {
 
     // password validation check
     if (
-        typeof requestProperties.body.password === 'string'
-        && requestProperties.body.password.trim().length > 0
+        typeof requestProperties.body.password === 'string' &&
+        requestProperties.body.password.trim().length > 0
     ) {
         password = requestProperties.body.password;
     } else {
@@ -193,35 +211,48 @@ handler._users.put = (requestProperties, callback) => {
 
     if (phone) {
         if (firstName || lastName || password) {
-            // lookup the user
-            data.read('users', phone, (err1, uData) => {
-                const userData = { ...parseJSON(uData) };
-                if (!err1 && userData) {
-                    if (firstName) {
-                        userData.firstName = firstName;
-                    }
-                    if (lastName) {
-                        userData.lastName = lastName;
-                    }
-                    if (password) {
-                        userData.password = hash(password);
-                    }
+            const token =
+                typeof requestProperties.headersObject.token === 'string'
+                    ? requestProperties.headersObject.token
+                    : false;
 
-                    // store userData to db
-                    data.update('users', phone, userData, (err2) => {
-                        if (!err2) {
-                            callback(200, {
-                                message: 'User was updated successfully!',
+            tokenHandler._token.verify(token, phone, (tokenId) => {
+                if (tokenId) {
+                    // lookup the user
+                    data.read('users', phone, (err1, uData) => {
+                        const userData = { ...parseJSON(uData) };
+                        if (!err1 && userData) {
+                            if (firstName) {
+                                userData.firstName = firstName;
+                            }
+                            if (lastName) {
+                                userData.lastName = lastName;
+                            }
+                            if (password) {
+                                userData.password = hash(password);
+                            }
+
+                            // store userData to db
+                            data.update('users', phone, userData, (err2) => {
+                                if (!err2) {
+                                    callback(200, {
+                                        message: 'User was updated successfully!',
+                                    });
+                                } else {
+                                    callback(500, {
+                                        message: 'There was a problem in server side!',
+                                    });
+                                }
                             });
                         } else {
-                            callback(500, {
-                                message: 'There was a problem in server side!',
+                            callback(400, {
+                                error: 'You have a problem in your request!',
                             });
                         }
                     });
                 } else {
-                    callback(400, {
-                        error: 'You have a problem in your request!',
+                    callback(403, {
+                        error: 'Authentication failure!',
                     });
                 }
             });
@@ -240,8 +271,8 @@ handler._users.delete = (requestProperties, callback) => {
     let phone;
     // phone number validation check
     if (
-        typeof requestProperties.queryStringObject.phone === 'string'
-        && requestProperties.queryStringObject.phone.trim().length === 11
+        typeof requestProperties.queryStringObject.phone === 'string' &&
+        requestProperties.queryStringObject.phone.trim().length === 11
     ) {
         phone = requestProperties.queryStringObject.phone;
     } else {
@@ -249,13 +280,26 @@ handler._users.delete = (requestProperties, callback) => {
     }
 
     if (phone) {
-        // lookup user
-        data.read('users', phone, (err1, userData) => {
-            if (!err1 && userData) {
-                data.delete('users', phone, (err2) => {
-                    if (!err2) {
-                        callback(200, {
-                            message: 'User was successfully deleted!',
+        const token =
+            typeof requestProperties.headersObject.token === 'string'
+                ? requestProperties.headersObject.token
+                : false;
+
+        tokenHandler._token.verify(token, phone, (tokenId) => {
+            if (tokenId) {
+                // lookup user
+                data.read('users', phone, (err1, userData) => {
+                    if (!err1 && userData) {
+                        data.delete('users', phone, (err2) => {
+                            if (!err2) {
+                                callback(200, {
+                                    message: 'User was successfully deleted!',
+                                });
+                            } else {
+                                callback(500, {
+                                    message: 'There was a server side error !',
+                                });
+                            }
                         });
                     } else {
                         callback(500, {
@@ -264,8 +308,8 @@ handler._users.delete = (requestProperties, callback) => {
                     }
                 });
             } else {
-                callback(500, {
-                    message: 'There was a server side error !',
+                callback(403, {
+                    error: 'Authentication failure!',
                 });
             }
         });
