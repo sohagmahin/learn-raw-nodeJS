@@ -38,8 +38,8 @@ handler._users.post = (requestProperties, callback) => {
 
     // firstName validation check
     if (
-        typeof requestProperties.body.firstName === 'string'
-        && requestProperties.body.firstName.trim().length > 0
+        typeof requestProperties.body.firstName === 'string' &&
+        requestProperties.body.firstName.trim().length > 0
     ) {
         firstName = requestProperties.body.firstName;
     } else {
@@ -47,8 +47,8 @@ handler._users.post = (requestProperties, callback) => {
     }
     // lastName validation check
     if (
-        typeof requestProperties.body.lastName === 'string'
-        && requestProperties.body.lastName.trim().length > 0
+        typeof requestProperties.body.lastName === 'string' &&
+        requestProperties.body.lastName.trim().length > 0
     ) {
         lastName = requestProperties.body.lastName;
     } else {
@@ -57,8 +57,8 @@ handler._users.post = (requestProperties, callback) => {
 
     // phone number validation check
     if (
-        typeof requestProperties.body.phone === 'string'
-        && requestProperties.body.phone.trim().length === 11
+        typeof requestProperties.body.phone === 'string' &&
+        requestProperties.body.phone.trim().length === 11
     ) {
         phone = requestProperties.body.phone;
     } else {
@@ -67,8 +67,8 @@ handler._users.post = (requestProperties, callback) => {
 
     // password validation check
     if (
-        typeof requestProperties.body.password === 'string'
-        && requestProperties.body.password.trim().length > 0
+        typeof requestProperties.body.password === 'string' &&
+        requestProperties.body.password.trim().length > 0
     ) {
         password = requestProperties.body.password;
     } else {
@@ -123,8 +123,8 @@ handler._users.get = (requestProperties, callback) => {
 
     // user phone number validation check
     if (
-        typeof requestProperties.queryStringObject.phone === 'string'
-        && requestProperties.queryStringObject.phone.trim().length > 0
+        typeof requestProperties.queryStringObject.phone === 'string' &&
+        requestProperties.queryStringObject.phone.trim().length > 0
     ) {
         phone = requestProperties.queryStringObject.phone;
     } else {
@@ -132,7 +132,8 @@ handler._users.get = (requestProperties, callback) => {
     }
 
     if (phone) {
-        const token =            typeof requestProperties.headersObject.token === 'string'
+        const token =
+            typeof requestProperties.headersObject.token === 'string'
                 ? requestProperties.headersObject.token
                 : false;
 
@@ -171,8 +172,8 @@ handler._users.put = (requestProperties, callback) => {
 
     // firstName validation check
     if (
-        typeof requestProperties.body.firstName === 'string'
-        && requestProperties.body.firstName.trim().length > 0
+        typeof requestProperties.body.firstName === 'string' &&
+        requestProperties.body.firstName.trim().length > 0
     ) {
         firstName = requestProperties.body.firstName;
     } else {
@@ -180,8 +181,8 @@ handler._users.put = (requestProperties, callback) => {
     }
     // lastName validation check
     if (
-        typeof requestProperties.body.lastName === 'string'
-        && requestProperties.body.lastName.trim().length > 0
+        typeof requestProperties.body.lastName === 'string' &&
+        requestProperties.body.lastName.trim().length > 0
     ) {
         lastName = requestProperties.body.lastName;
     } else {
@@ -190,8 +191,8 @@ handler._users.put = (requestProperties, callback) => {
 
     // phone number validation check
     if (
-        typeof requestProperties.body.phone === 'string'
-        && requestProperties.body.phone.trim().length === 11
+        typeof requestProperties.body.phone === 'string' &&
+        requestProperties.body.phone.trim().length === 11
     ) {
         phone = requestProperties.body.phone;
     } else {
@@ -200,8 +201,8 @@ handler._users.put = (requestProperties, callback) => {
 
     // password validation check
     if (
-        typeof requestProperties.body.password === 'string'
-        && requestProperties.body.password.trim().length > 0
+        typeof requestProperties.body.password === 'string' &&
+        requestProperties.body.password.trim().length > 0
     ) {
         password = requestProperties.body.password;
     } else {
@@ -210,7 +211,8 @@ handler._users.put = (requestProperties, callback) => {
 
     if (phone) {
         if (firstName || lastName || password) {
-            const token =                typeof requestProperties.headersObject.token === 'string'
+            const token =
+                typeof requestProperties.headersObject.token === 'string'
                     ? requestProperties.headersObject.token
                     : false;
 
@@ -269,8 +271,8 @@ handler._users.delete = (requestProperties, callback) => {
     let phone;
     // phone number validation check
     if (
-        typeof requestProperties.queryStringObject.phone === 'string'
-        && requestProperties.queryStringObject.phone.trim().length === 11
+        typeof requestProperties.queryStringObject.phone === 'string' &&
+        requestProperties.queryStringObject.phone.trim().length === 11
     ) {
         phone = requestProperties.queryStringObject.phone;
     } else {
@@ -278,7 +280,8 @@ handler._users.delete = (requestProperties, callback) => {
     }
 
     if (phone) {
-        const token =            typeof requestProperties.headersObject.token === 'string'
+        const token =
+            typeof requestProperties.headersObject.token === 'string'
                 ? requestProperties.headersObject.token
                 : false;
 
