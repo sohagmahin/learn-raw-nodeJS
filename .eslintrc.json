@@ -21,6 +21,6 @@
         "semi": true
       }
     ]
-  },
-  "plugins": ["prettier"]
+  }
+  // "plugins": ["prettier"]
 }
