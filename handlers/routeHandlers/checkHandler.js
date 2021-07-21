@@ -9,7 +9,7 @@
 
 // dependencies
 const data = require('../../lib/data');
-const { hash, parseJSON, createRandomString } = require('../../helpers/utilities');
+const { parseJSON, createRandomString } = require('../../helpers/utilities');
 const tokenHandler = require('./tokenHandler');
 const { maxChecks } = require('../../helpers/environments');
 
@@ -146,6 +146,68 @@ handler._check.get = (requestProperties, callback) => {
         }
 };
 
-handler._check.put = (requestProperties, callback) => {};
+handler._check.put = (requestProperties, callback) => {
+    const id = typeof requestProperties.body.id === 'string' && requestProperties.body.id.trim().length === 20 ? requestProperties.body.id : false;
+    const protocol = typeof (requestProperties.body.protocol) === 'string' && ['http', 'https'].indexOf(requestProperties.body.protocol) > -1 ? requestProperties.body.protocol : false;
+    const url = typeof (requestProperties.body.url) === 'string' && requestProperties.body.url.trim().length > 0 ? requestProperties.body.url : false;
+    const method = typeof (requestProperties.body.method) === 'string' && ['GET', 'POST', 'PUT', 'DELETE'].indexOf(requestProperties.body.method) > -1 ? requestProperties.body.method : false;
+    const successCodes = typeof (requestProperties.body.successCodes) === 'object' && requestProperties.body.successCodes instanceof Array ? requestProperties.body.successCodes : false;
+    const timeoutSeconds = typeof (requestProperties.body.timeoutSeconds) === 'number' && requestProperties.body.timeoutSeconds % 1 === 0 && requestProperties.body.timeoutSeconds >= 1 && requestProperties.body.timeoutSeconds <= 5 ? requestProperties.body.timeoutSeconds : false;
+
+    if (id) {
+        if (protocol || url || method || successCodes || timeoutSeconds) {
+            data.read('checks', id, (err1, checkData) => {
+                if (!err1 && checkData) {
+                    const checkObject = parseJSON(checkData);
+                    const token = typeof requestProperties.headersObject.token === 'string' ? requestProperties.headersObject.token : false;
+                    tokenHandler._token.verify(token, checkObject.userPhone, (tokenIsValid) => {
+                        if (tokenIsValid) {
+                            if (protocol) {
+                                checkObject.protocol = protocol;
+                            }
+                            if (url) {
+                                checkObject.url = url;
+                            }
+                            if (method) {
+                                checkObject.method = method;
+                            }
+                            if (successCodes) {
+                                checkObject.successCodes = successCodes;
+                            }
+                            if (timeoutSeconds) {
+                                checkObject.timeoutSeconds = timeoutSeconds;
+                            }
+                            data.update('checks', id, checkObject, (err3) => {
+                                if (!err3) {
+                                    callback(200);
+                                } else {
+                                    callback(500, {
+                                        error: 'There was a server side problem!',
+                                    });
+                                }
+                            });
+                        } else {
+                            callback(403, {
+                                error: 'Authentication error!',
+                            });
+                        }
+                    });
+                } else {
+                    callback(500, {
+                        error: 'There was a server side problem!',
+                    });
+                }
+            });
+        } else {
+            callback(400, {
+                error: 'You must add atleast one filed to update!',
+            });
+        }
+    } else {
+        callback(400, {
+            error: 'You have a problem in your request!',
+        });
+    }
+};
 handler._check.delete = (requestProperties, callback) => {};
 module.exports = handler;
