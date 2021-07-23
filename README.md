@@ -116,7 +116,6 @@
 	- `Content-Type: application/json`  
 
 4.
-2.
 * **URL:**
 `token?id=[id]`
 
