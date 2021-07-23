@@ -4,7 +4,7 @@
 
 [232]: https://www.youtube.com/playlist?list=PLHiZ4m8vCp9PHnOIT7gd30PCBoYCpGoQM "Learn with sumit"
 
-#### *#User- CRUD*
+>### *#User- CRUD*
 1.
 * **URL:**
 `/user`
@@ -18,15 +18,15 @@
       "lastName": "mahin",
       "phone": "01712300000",
       "password": "123456",
-      "tosAgreement": true
+      "tosAgreement": true.
   }`
 
 * **Header:**
->Content-Type: application/json
+`Content-Type: application/json`
 
 2.
 * **URL**
-/user?phone=[phoneNumber]
+`/user?phone=[phoneNumber]`
 
 * **Method :**
 `GET` 
@@ -34,9 +34,9 @@
 * **URL Params:**
 `phoneNumber =[string]`
 
-* **Header**
->Content-Type: application/json
->token: 6aiegr0lunh9y8whs6mt 
+* **Header:**
+	- `Content-Type: application/json`  
+	- `token: 6aiegr0lunh9y8whs6mt`
 
 3.
 * **URL:**
@@ -52,7 +52,7 @@
 }`
 
 * **Header:**
->Content-Type: application/json
+	- `Content-Type: application/json`  
 
 4.
 * **URL:**
@@ -65,11 +65,11 @@
 `phoneNumber =[string]`
 
 * **Header:**
->Content-Type: application/json
->token: 6aiegr0lunh9y8whs6mt 
+	- `Content-Type: application/json`  
+	- `token: 6aiegr0lunh9y8whs6mt` 
 
 
-#### *#Token- CRUD*
+>### *#Token- CRUD*
 1.
 * **URL**
 `/token`
@@ -84,7 +84,7 @@
 }`
 
 * **Header:**
->Content-Type: application/json
+	- `Content-Type: application/json`  
 
 2.
 * **URL:**
@@ -96,8 +96,8 @@
 * **URL Params:**
 `id =[string]`
 
-* **Header**
->Content-Type: application/json
+* **Header:**
+	- `Content-Type: application/json`  
 
 3. 
 * **URL:**
@@ -112,8 +112,8 @@
  "extend": true
 }`
 
-* **Header**
->Content-Type: application/json
+* **Header:**
+	- `Content-Type: application/json`  
 
 4.
 2.
@@ -127,9 +127,9 @@
 `id =[string]`
 
 * **Header:**
->Content-Type: application/json
+	- `Content-Type: application/json`  
 
-#### *#Checks- CRUD*
+>### *#Checks- CRUD*
 1.
 * **URL:**
 `/check`
@@ -147,8 +147,7 @@
 }`
 
 * **Header:**
->Content-Type: application/json
->token: 6aiegr0lunh9y8whs6mt 
+	- `Content-Type: application/json`  
 
 2.
 * **URL:**
@@ -161,8 +160,8 @@
 `id =[string]`
 
 * **Header:**
->Content-Type: application/json
->token: 6aiegr0lunh9y8whs6mt 
+	- `Content-Type: application/json`  
+	- `token: 6aiegr0lunh9y8whs6mt` 
 
 3.
 * **URL:**
@@ -178,8 +177,8 @@
 }`
 
 * **Header:**
->Content-Type: application/json
->token: 6aiegr0lunh9y8whs6mt 
+	- `Content-Type: application/json`  
+	- `token: 6aiegr0lunh9y8whs6mt`
 
 4.
 * **URL:**
@@ -191,7 +190,7 @@
 * **URL Params:**
 `id =[string]`
 
-* **Header**
->Content-Type: application/json
->token: 6aiegr0lunh9y8whs6mt 
+* **Header:**
+	- `Content-Type: application/json`  
+	- `token: 6aiegr0lunh9y8whs6mt`
 
